@@ -1,39 +1,43 @@
 import pygame
-pygame.init()  
+pygame.init()
 
-white, black = (255, 255, 255), (0, 0, 0) 
-width, height = 400, 400
+WHITE, BLACK = (255, 255, 255), (0, 0, 0)
+WIDTH, HEIGHT = 400, 400
 
-fps = 120
+FPS = 120
 
-screen = pygame.display.set_mode((width, height))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('pong')
-  
-class Paddle:
 
-    def __init__(self, x, y, width, height, color):
+
+class Paddle:
+    COLOR = WHITE
+
+    def __init__(self, x, y, WIDTH, HEIGHT, color):
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
-        self.color = color
+        self.WIDTH = WIDTH
+        self.HEIGHT = HEIGHT
 
         def draw(self, screen):
-            pygame.draw.rectangle(screen, self.color, (self.x, self.y, self.width, self.height))
+            pygame.draw.rectangle(screen, self.COLOR,
+                                  (self.x, self.y, self.WIDTH, self.HEIGHT))
+
 
 def draw(screen):
-    screen.fill(black)
+    screen.fill(BLACK)
     pygame.display.update()
+
 
 def main():
     clock = pygame.time.Clock()
-    clock.tick(fps)
+    clock.tick(FPS)
 
     draw(screen)
 
     running = True
     while running:
-        for event in pygame.event.get():      
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 break
