@@ -1,28 +1,31 @@
 import pygame
-  
+pygame.init()  
+
 white, black = (255, 255, 255), (0, 0, 0) 
+width, height = 400, 400
 
-screen = pygame.display.set_mode((400, 400))
+fps = 120
+
+screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('pong')
-screen.fill(black)
   
-#pygame.display.flip()
-  
-pygame.draw.polygon(screen, white,
-                    [(146, 0), (291, 106),
-                    (236, 277), (56, 277), (0, 106)])
+def draw(screen):
+    screen.fill(white)
+    pygame.display.update()
 
-pygame.draw.line(screen, white,
-                (60, 300), (120, 300), 4)
+def main():
+    clock = pygame.time.Clock()
+    clock.tick(fps) 
+    draw(screen)
 
-pygame.draw.circle(screen,
-           white, (300, 50), 20, 0)
+    running = True
+    while running:
+        for event in pygame.event.get():      
+            if event.type == pygame.QUIT:
+                running = False
+                break
+    pygame.quit()
 
-pygame.draw.ellipse(screen, white,
-                    (300, 250, 40, 80), 1)
 
-running = True
-while running:
-    for event in pygame.event.get():      
-        if event.type == pygame.QUIT:
-            running = False
+if __name__ == '__main__':
+    main()
