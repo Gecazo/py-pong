@@ -14,6 +14,7 @@ pygame.display.set_caption('pong')
 
 class Paddle():
     COLOR = WHITE
+    VELOCITY = 4
 
     def __init__(self, x, y, width, height, color):
         self.x = x
@@ -23,6 +24,12 @@ class Paddle():
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.COLOR, (self.x, self.y, self.width, self.height))
+    
+    def move(self, up=True):
+        if up:
+            self.y -= self.VELOCITY
+        else:
+            self.y += self.VELOCITY
 
 
 def draw(screen, paddles):
@@ -33,6 +40,16 @@ def draw(screen, paddles):
 
     pygame.display.update()
 
+def handle_paddle_movement(keys, left_paddle, right_paddle):
+    if keys[pygame.K_w]:
+        left_paddle.move(up=True)
+    if keys[pygame.K_s]:
+        left_paddle.move(up=False)
+
+    if keys[pygame.K_UP]:
+        right_paddle.move(up=True)
+    if keys[pygame.K_DOWN]:
+        right_paddle.move(up=False)
 
 def main():
     clock = pygame.time.Clock()
@@ -48,6 +65,10 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
                 break
+        
+        keys = pygame.key.get_pressed()
+        handle_paddle_movement(keys, left_paddle, right_paddle)
+
     pygame.quit()
 
 
