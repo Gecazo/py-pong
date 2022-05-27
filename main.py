@@ -7,7 +7,7 @@ WIDTH, HEIGHT = 400, 400
 PADDLE_WIDTH, PADDLE_HEIGHT = 20, 100
 BALL_RADIUS = 7
 
-FPS = 120
+FPS = 288
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('pong')
@@ -33,7 +33,7 @@ class Paddle():
             self.y += self.VELOCITY
 
 class Ball():
-    MAX_VEL = 5
+    MAX_VEL = 3
     COLOR = WHITE
 
     def __init__(self, x, y, radius):
@@ -63,6 +63,21 @@ def draw(screen, paddles, ball):
 
     ball.draw(screen)
     pygame.display.update()
+
+def handle_collision(ball, left_paddle, right_paddle):
+    if ball.y + ball.radius >= HEIGHT:
+        ball.y_vel *= -1
+    elif ball.y - ball.radius <= 0:
+        ball.y_vel *= -1
+
+    if ball.x_vel < 0:
+            if ball.y >= left_paddle.y and ball.y <= left_paddle.y + left_paddle.height:
+                if ball.x - ball.radius <= left_paddle.x + left_paddle.width:
+                    ball.x_vel *= -1
+    else:
+            if ball.y >= right_paddle.y and ball.y <= right_paddle.y + right_paddle.height:
+                if ball.x - ball.radius >= right_paddle.x:
+                    ball.x_vel *= -1
 
 def handle_paddle_movement(keys, left_paddle, right_paddle):
     if keys[pygame.K_w] and left_paddle.y - left_paddle.VELOCITY >= 0:
@@ -94,6 +109,9 @@ def main():
         
         keys = pygame.key.get_pressed()
         handle_paddle_movement(keys, left_paddle, right_paddle)
+
+        ball.move()
+        handle_collision(ball, left_paddle, right_paddle)
 
     pygame.quit()
 
