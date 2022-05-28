@@ -2,7 +2,7 @@ import pygame
 pygame.init()
 
 WHITE, BLACK = (255, 255, 255), (0, 0, 0)
-WIDTH, HEIGHT = 400, 400
+WIDTH, HEIGHT = 800, 800
 
 PADDLE_WIDTH, PADDLE_HEIGHT = 20, 100
 BALL_RADIUS = 7
@@ -14,14 +14,16 @@ FPS = 288
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('pong')
 
+WIN_SCORE = 10
+
 
 class Paddle():
     COLOR = WHITE
     VELOCITY = 4
 
     def __init__(self, x, y, width, height, color):
-        self.x = x
-        self.y = y
+        self.x = self.original_x = x
+        self.y = self.original_y = y
         self.width = width
         self.height = height
 
@@ -33,6 +35,10 @@ class Paddle():
             self.y -= self.VELOCITY
         else:
             self.y += self.VELOCITY
+
+    def reset():
+        self.x = self.original_x
+        self.x = self.original_y
 
 class Ball():
     MAX_VEL = 3
@@ -142,6 +148,25 @@ def main():
         elif ball.x > WIDTH:
             left_score +=1
             ball.reset()
+        
+        won = False
+
+        if left_score >= WIN_SCORE:
+            won = True
+            win_text = "Left palyer won!"
+        if right_score >= WIN_SCORE:
+            won = True
+            win_text = "Player palyer won!"
+
+        if won:
+            text = FONT.render(win_text, 1, WHITE)
+            screen.blit(text, (WIDTH//2 - text.get_width()//2, HEIGHT//2 - text.get_height()//2))
+            pygame.display.update()
+            pygame.time.delay(5000)
+            ball.reset()
+            right_paddle.reset()
+            left_paddle.reset()
+            left_score, right_score = 0, 0
 
     pygame.quit()
 
