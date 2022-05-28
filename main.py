@@ -39,8 +39,8 @@ class Ball():
     COLOR = WHITE
 
     def __init__(self, x, y, radius):
-        self.x = x
-        self.y = y
+        self.x = self.original_x = x
+        self.y = self.original_y = y
         self.radius = radius
         self.x_vel = self.MAX_VEL
         self.y_vel = 0
@@ -51,6 +51,13 @@ class Ball():
     def move(self):
         self.x += self.x_vel
         self.y += self.y_vel
+    
+    def reset(self):
+        self.x = self.original_x
+        self.y = self.original_y
+        self.y_vel = 0
+        self.x_vel *= -1
+
 
 def draw(screen, paddles, ball, left_score, right_score):
     screen.fill(BLACK)
@@ -58,7 +65,7 @@ def draw(screen, paddles, ball, left_score, right_score):
     left_score_text =  FONT.render(f"{left_score}", 1, WHITE)
     right_score_text =  FONT.render(f"{right_score}", 1, WHITE)
     screen.blit(left_score_text, (WIDTH//4 - left_score_text.get_width()//2, 20))
-    screen.blit(left_score_text, (WIDTH* (3/4) - right_score_text.get_width()//2, 20))
+    screen.blit(right_score_text, (WIDTH* (3/4) - right_score_text.get_width()//2, 20))
 
     for paddle in paddles:
         paddle.draw(screen)
@@ -131,8 +138,10 @@ def main():
 
         if ball.x < 0:
             right_score += 1
+            ball.reset()
         elif ball.x > WIDTH:
             left_score +=1
+            ball.reset()
 
     pygame.quit()
 
