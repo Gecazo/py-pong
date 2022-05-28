@@ -7,6 +7,8 @@ WIDTH, HEIGHT = 400, 400
 PADDLE_WIDTH, PADDLE_HEIGHT = 20, 100
 BALL_RADIUS = 7
 
+FONT = pygame.font.SysFont('comicsans', 50)
+
 FPS = 288
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -50,8 +52,13 @@ class Ball():
         self.x += self.x_vel
         self.y += self.y_vel
 
-def draw(screen, paddles, ball):
+def draw(screen, paddles, ball, left_score, right_score):
     screen.fill(BLACK)
+
+    left_score_text =  FONT.render(f"{left_score}", 1, WHITE)
+    right_score_text =  FONT.render(f"{right_score}", 1, WHITE)
+    screen.blit(left_score_text, (WIDTH//4 - left_score_text.get_width()//2, 20))
+    screen.blit(left_score_text, (WIDTH* (3/4) - right_score_text.get_width()//2, 20))
 
     for paddle in paddles:
         paddle.draw(screen)
@@ -74,6 +81,12 @@ def handle_collision(ball, left_paddle, right_paddle):
             if ball.y >= left_paddle.y and ball.y <= left_paddle.y + left_paddle.height:
                 if ball.x - ball.radius <= left_paddle.x + left_paddle.width:
                     ball.x_vel *= -1
+
+                    middle_y  = left_paddle.y + left_paddle.height  / 2
+                    difference_y = middle_y - ball.y
+                    reduction_factor = (left_paddle.height / 2) / ball.MAX_VEL
+                    y_vel = difference_y / reduction_factor
+                    ball.y_vel = -1 * y_vel
     else:
             if ball.y >= right_paddle.y and ball.y <= right_paddle.y + right_paddle.height:
                 if ball.x - ball.radius >= right_paddle.x:
@@ -98,10 +111,13 @@ def main():
 
     ball = Ball(WIDTH//2, HEIGHT//2, BALL_RADIUS)
 
+    left_score = 0
+    right_score = 0
+
     running = True
     while running:
         clock.tick(FPS)
-        draw(screen, [left_paddle, right_paddle], ball)
+        draw(screen, [left_paddle, right_paddle], ball, left_score, right_score)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -112,6 +128,11 @@ def main():
 
         ball.move()
         handle_collision(ball, left_paddle, right_paddle)
+
+        if ball.x < 0:
+            right_score += 1
+        elif ball.x > WIDTH:
+            left_score +=1
 
     pygame.quit()
 
